@@ -12,19 +12,17 @@ Seu site ficara em:
 https://thifroz.pythonanywhere.com
 ```
 
-## 2. Enviar o projeto
+## 2. Baixar o projeto pelo GitHub
 
-Opção simples: compacte a pasta do projeto, envie pelo painel **Files** e descompacte no PythonAnywhere.
-
-Opcao com Git:
+No console Bash do PythonAnywhere:
 
 ```bash
-git clone URL_DO_SEU_REPOSITORIO controle-estoque-natura-avon
+git clone https://github.com/ThiagoFroz/controle-estoque-natura-avon.git controle-estoque-natura-avon
 ```
 
 ## 3. Criar ambiente virtual
 
-No console Bash do PythonAnywhere:
+Ainda no console Bash do PythonAnywhere:
 
 ```bash
 cd ~/controle-estoque-natura-avon
