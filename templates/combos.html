@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">Combos</h1>
+<form method="post" class="row g-2 mb-4">
+  <div class="col-md-4"><input class="form-control" name="nome" placeholder="Nome do combo" required></div>
+  <div class="col-md-2"><input class="form-control" name="preco" type="number" step="0.01" placeholder="Preco" required></div>
+  <div class="col-md-3"><select class="form-select" name="ciclo_id"><option value="">Sem ciclo</option>{% for c in ciclos %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><input class="form-control" name="descricao" placeholder="Descricao"></div>
+  {% for i in range(3) %}
+    <div class="col-md-9"><select class="form-select" name="produto_id"><option value="">Produto do combo</option>{% for p in produtos %}<option value="{{ p.id }}">{{ p.nome }}</option>{% endfor %}</select></div>
+    <div class="col-md-3"><input class="form-control" name="quantidade" type="number" min="1" placeholder="Qtd"></div>
+  {% endfor %}
+  <div class="col-12"><button class="btn btn-brand">Criar combo</button></div>
+</form>
+<div class="row g-3">{% for combo in combos %}<div class="col-md-6"><div class="card h-100"><div class="card-body"><h2 class="h5">{{ combo.nome }}</h2><p class="text-muted">{{ combo.descricao }}</p><p class="price">R$ {{ "%.2f"|format(combo.preco) }}</p><ul>{% for item in combo.itens %}<li>{{ item.quantidade }}x {{ item.produto.nome }}</li>{% endfor %}</ul><form method="post" action="{{ url_for('venda.remover_combo', combo_id=combo.id) }}"><button class="btn btn-sm btn-outline-danger">Desativar</button></form></div></div></div>{% endfor %}</div>
+{% endblock %}

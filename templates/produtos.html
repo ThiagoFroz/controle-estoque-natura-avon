@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0">{{ "Catalogo" if publico else "Produtos" }}</h1>
+  {% if not publico %}
+    <a class="btn btn-brand" href="{{ url_for('produto.criar_produto') }}">Novo produto</a>
+  {% endif %}
+</div>
+
+{% if publico %}
+<form class="row g-2 mb-4">
+  <div class="col-md-5"><input class="form-control" name="busca" placeholder="Buscar por nome ou codigo" value="{{ filtros.busca }}"></div>
+  <div class="col-md-3">
+    <select class="form-select" name="marca">
+      <option value="">Todas as marcas</option>
+      {% for item in marcas %}<option value="{{ item }}" {% if filtros.marca == item %}selected{% endif %}>{{ item }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" name="categoria">
+      <option value="">Todas as categorias</option>
+      {% for item in categorias %}<option value="{{ item }}" {% if filtros.categoria == item %}selected{% endif %}>{{ item }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-1"><button class="btn btn-brand w-100">Filtrar</button></div>
+</form>
+{% endif %}
+
+<div class="row g-3">
+  {% for produto in produtos %}
+    <div class="col-md-6 col-xl-4">
+      <div class="card product-card h-100">
+        {% if produto.imagem %}
+          <img src="{{ url_for('static', filename='uploads/' ~ produto.imagem) }}" class="card-img-top" alt="{{ produto.nome }}">
+        {% endif %}
+        <div class="card-body">
+          <div class="d-flex justify-content-between gap-2">
+            <h2 class="h5">{{ produto.nome }}</h2>
+            {% if not produto.ativo %}<span class="badge text-bg-secondary align-self-start">Inativo</span>{% endif %}
+          </div>
+          <p class="text-muted mb-1">{{ produto.codigo }} | {{ produto.marca }} | {{ produto.categoria }}</p>
+          <p class="price mb-2">R$ {{ "%.2f"|format(produto.preco) }}</p>
+          <p class="mb-3">Estoque: {{ produto.quantidade }}</p>
+          <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('produto.detalhe_produto', produto_id=produto.id) }}">Ver</a>
+            {% if not publico %}
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('produto.editar_produto', produto_id=produto.id) }}">Editar</a>
+              <form method="post" action="{{ url_for('produto.remover_produto', produto_id=produto.id) }}">
+                <button class="btn btn-sm btn-outline-danger">Remover</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <p class="text-muted">Nenhum produto encontrado.</p>
+  {% endfor %}
+</div>
+{% endblock %}

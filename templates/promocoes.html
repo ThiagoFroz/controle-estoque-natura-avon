@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">Promocoes</h1>
+<form method="post" class="row g-2 align-items-end mb-4">
+  <div class="col-md-5"><label class="form-label">Produto</label><select class="form-select" name="produto_id" required>{% for p in produtos %}<option value="{{ p.id }}">{{ p.nome }} - R$ {{ "%.2f"|format(p.preco) }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><label class="form-label">Preco promocional</label><input class="form-control" name="preco_promocional" type="number" step="0.01" required></div>
+  <div class="col-md-3"><label class="form-label">Ciclo</label><select class="form-select" name="ciclo_id" required>{% for c in ciclos %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}</select></div>
+  <div class="col-md-1"><button class="btn btn-brand w-100">Salvar</button></div>
+</form>
+<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Produto</th><th>Original</th><th>Promocional</th><th>Ciclo</th><th>Status</th><th></th></tr></thead><tbody>{% for p in promocoes %}<tr><td>{{ p.produto.nome }}</td><td>R$ {{ "%.2f"|format(p.produto.preco) }}</td><td>R$ {{ "%.2f"|format(p.preco_promocional) }}</td><td>{{ p.ciclo.nome }}</td><td>{{ "Ativa" if p.ativa else "Inativa" }}</td><td><form method="post" action="{{ url_for('venda.remover_promocao', promocao_id=p.id) }}"><button class="btn btn-sm btn-outline-danger">Desativar</button></form></td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

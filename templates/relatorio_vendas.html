@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3"><h1 class="h3">Relatorio de vendas</h1><button class="btn btn-brand no-print" onclick="window.print()">Imprimir PDF</button></div>
+<table class="table table-bordered"><thead><tr><th>Data</th><th>Produto</th><th>Quantidade</th><th>Unitario</th><th>Total</th></tr></thead><tbody>{% for item in itens %}<tr><td>{{ item.venda.data.strftime("%d/%m/%Y %H:%M") }}</td><td>{{ item.produto.nome }}</td><td>{{ item.quantidade }}</td><td>R$ {{ "%.2f"|format(item.valor_unitario) }}</td><td>R$ {{ "%.2f"|format(item.quantidade * item.valor_unitario) }}</td></tr>{% endfor %}</tbody></table>
+{% endblock %}

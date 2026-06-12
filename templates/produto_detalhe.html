@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-5">
+    {% if produto.imagem %}
+      <img class="img-fluid rounded product-detail-img" src="{{ url_for('static', filename='uploads/' ~ produto.imagem) }}" alt="{{ produto.nome }}">
+    {% else %}
+      <div class="placeholder-img">Sem imagem</div>
+    {% endif %}
+  </div>
+  <div class="col-md-7">
+    <h1>{{ produto.nome }}</h1>
+    <p class="text-muted">{{ produto.codigo }} | {{ produto.marca }} | {{ produto.categoria }}</p>
+    <p class="display-6 price">R$ {{ "%.2f"|format(produto.preco) }}</p>
+    <p><strong>Estoque:</strong> {{ produto.quantidade }}</p>
+    <p>{{ produto.descricao or "Sem descricao cadastrada." }}</p>
+  </div>
+</div>
+{% endblock %}

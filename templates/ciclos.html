@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">Ciclos</h1>
+<form method="post" class="row g-2 align-items-end mb-4">
+  <div class="col-md-4"><label class="form-label">Nome</label><input class="form-control" name="nome" placeholder="Ciclo 10" required></div>
+  <div class="col-md-3"><label class="form-label">Inicio</label><input class="form-control" type="date" name="data_inicio" required></div>
+  <div class="col-md-3"><label class="form-label">Fim</label><input class="form-control" type="date" name="data_fim" required></div>
+  <div class="col-md-2"><button class="btn btn-brand w-100">Cadastrar</button></div>
+</form>
+<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Nome</th><th>Inicio</th><th>Fim</th></tr></thead><tbody>{% for ciclo in ciclos %}<tr><td>{{ ciclo.nome }}</td><td>{{ ciclo.data_inicio.strftime("%d/%m/%Y") }}</td><td>{{ ciclo.data_fim.strftime("%d/%m/%Y") }}</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

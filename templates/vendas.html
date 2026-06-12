@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">Vendas</h1>
+<form method="post" class="mb-4">
+  <div id="sale-items">
+    {% for i in range(3) %}
+      <div class="row g-2 mb-2 sale-line">
+        <div class="col-md-8"><select class="form-select" name="produto_id"><option value="">Produto</option>{% for p in produtos %}<option value="{{ p.id }}">{{ p.nome }} - R$ {{ "%.2f"|format(p.preco) }} ({{ p.quantidade }})</option>{% endfor %}</select></div>
+        <div class="col-md-3"><input class="form-control" type="number" name="quantidade" min="1" placeholder="Quantidade"></div>
+      </div>
+    {% endfor %}
+  </div>
+  <button class="btn btn-brand">Cadastrar venda</button>
+</form>
+<h2 class="h5">Historico de vendas</h2>
+<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Data</th><th>Itens</th><th>Total</th></tr></thead><tbody>{% for venda in vendas %}<tr><td>{{ venda.data.strftime("%d/%m/%Y %H:%M") }}</td><td>{% for item in venda.itens %}{{ item.produto.nome }} x{{ item.quantidade }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td><td>R$ {{ "%.2f"|format(venda.valor_total) }}</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

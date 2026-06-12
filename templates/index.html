@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero mb-4">
+  <div>
+    <p class="text-uppercase small mb-2">Controle de estoque e catalogo</p>
+    <h1>Produtos Natura e Avon em um unico lugar</h1>
+    <p class="lead">Consulte promocoes, combos e produtos disponiveis no ciclo atual.</p>
+    <a class="btn btn-light" href="{{ url_for('produto.catalogo') }}">Ver catalogo</a>
+  </div>
+</section>
+
+{% if ciclo %}
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h4 mb-0">{{ ciclo.nome }}</h2>
+    <span class="text-muted">{{ ciclo.data_inicio.strftime("%d/%m/%Y") }} a {{ ciclo.data_fim.strftime("%d/%m/%Y") }}</span>
+  </div>
+{% endif %}
+
+<div class="row g-4">
+  <section class="col-lg-4">
+    <h2 class="h5">Promocoes</h2>
+    {% for promocao in promocoes %}
+      <div class="item-card">
+        <strong>{{ promocao.produto.nome }}</strong>
+        <span class="text-muted d-block">De R$ {{ "%.2f"|format(promocao.produto.preco) }} por</span>
+        <span class="price">R$ {{ "%.2f"|format(promocao.preco_promocional) }}</span>
+      </div>
+    {% else %}
+      <p class="text-muted">Nenhuma promocao ativa no ciclo atual.</p>
+    {% endfor %}
+  </section>
+  <section class="col-lg-4">
+    <h2 class="h5">Combos ativos</h2>
+    {% for combo in combos %}
+      <div class="item-card">
+        <strong>{{ combo.nome }}</strong>
+        <p class="mb-1 text-muted">{{ combo.descricao }}</p>
+        <span class="price">R$ {{ "%.2f"|format(combo.preco) }}</span>
+      </div>
+    {% else %}
+      <p class="text-muted">Nenhum combo ativo no ciclo atual.</p>
+    {% endfor %}
+  </section>
+  <section class="col-lg-4">
+    <h2 class="h5">Destaques</h2>
+    {% for produto in destaques %}
+      <a class="item-card d-block text-decoration-none text-body" href="{{ url_for('produto.detalhe_produto', produto_id=produto.id) }}">
+        <strong>{{ produto.nome }}</strong>
+        <span class="text-muted d-block">{{ produto.marca }} | {{ produto.categoria }}</span>
+        <span class="price">R$ {{ "%.2f"|format(produto.preco) }}</span>
+      </a>
+    {% else %}
+      <p class="text-muted">Cadastre produtos em destaque para exibir aqui.</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

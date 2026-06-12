@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">Estoque</h1>
+<form method="post" class="row g-2 align-items-end mb-4">
+  <div class="col-md-5"><label class="form-label">Produto</label><select class="form-select" name="produto_id" required>{% for p in produtos %}<option value="{{ p.id }}">{{ p.nome }} ({{ p.quantidade }})</option>{% endfor %}</select></div>
+  <div class="col-md-2"><label class="form-label">Tipo</label><select class="form-select" name="tipo"><option value="entrada">Entrada</option><option value="saida">Saida</option></select></div>
+  <div class="col-md-2"><label class="form-label">Quantidade</label><input class="form-control" type="number" min="1" name="quantidade" required></div>
+  <div class="col-md-3"><button class="btn btn-brand w-100">Registrar</button></div>
+</form>
+<h2 class="h5">Historico</h2>
+<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Data</th><th>Produto</th><th>Tipo</th><th>Quantidade</th><th>Responsavel</th></tr></thead><tbody>{% for m in movimentacoes %}<tr><td>{{ m.data.strftime("%d/%m/%Y %H:%M") }}</td><td>{{ m.produto.nome }}</td><td>{{ m.tipo }}</td><td>{{ m.quantidade }}</td><td>{{ m.responsavel }}</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}
