@@ -1,90 +1,49 @@
-# Deploy gratuito no PythonAnywhere
+# Implantação no PythonAnywhere
 
-Este projeto roda bem no plano gratuito do PythonAnywhere usando Flask + SQLite.
+Guia de referência para esta aplicação Flask. Ajuste caminhos, versão de Python e nome da conta ao ambiente disponível no painel do PythonAnywhere.
 
-## 1. Criar conta
+## Preparação
 
-Acesse `https://www.pythonanywhere.com/` e crie uma conta gratuita.
+1. Clone o repositório e crie um ambiente virtual.
+2. Instale as dependências com `pip install -r requirements.txt`.
+3. Defina no ambiente de execução:
+   - `SECRET_KEY`: segredo aleatório e estável, diferente para cada instalação.
+   - `ADMIN_USERNAME` e `ADMIN_PASSWORD`: dados **exclusivos** para criar o primeiro administrador em um banco novo. Eles não alteram contas existentes.
+   - `ADMIN_NAME` (opcional): nome de exibição do administrador.
+   - `DATABASE_URL` (opcional): URI de banco alternativa.
+4. Configure o arquivo WSGI com o diretório do projeto no `sys.path` e importe `from app import app as application`. Forneça os segredos por configuração privada do ambiente, fora do repositório.
+5. Configure o mapeamento de `/static/` para a pasta `static` e recarregue a aplicação pelo painel Web.
 
-Seu site ficara em:
-
-```text
-https://thifroz.pythonanywhere.com
-```
-
-## 2. Baixar o projeto pelo GitHub
-
-No console Bash do PythonAnywhere:
-
-```bash
-git clone https://github.com/ThiagoFroz/controle-estoque-natura-avon.git controle-estoque-natura-avon
-```
-
-## 3. Criar ambiente virtual
-
-Ainda no console Bash do PythonAnywhere:
-
-```bash
-cd ~/controle-estoque-natura-avon
-mkvirtualenv --python=/usr/bin/python3.13 estoque-env
-pip install -r requirements.txt
-```
-
-## 4. Criar Web App
-
-No painel **Web**:
-
-1. Clique em **Add a new web app**.
-2. Escolha **Manual configuration**.
-3. Escolha Python 3.13.
-4. Em **Virtualenv**, informe:
-
-```text
-/home/thifroz/.virtualenvs/estoque-env
-```
-
-## 5. Configurar WSGI
-
-No arquivo WSGI do PythonAnywhere, substitua o conteudo pelo modelo abaixo:
+Exemplo de trecho WSGI, usando variáveis já definidas fora do arquivo:
 
 ```python
-import os
 import sys
 
-path = "/home/thifroz/controle-estoque-natura-avon"
-
-if path not in sys.path:
-    sys.path.insert(0, path)
-
-os.environ["SECRET_KEY"] = "coloque-uma-chave-secreta-grande-aqui"
+project = "/home/SEU_USUARIO/controle-estoque-natura-avon"
+if project not in sys.path:
+    sys.path.insert(0, project)
 
 from app import app as application
 ```
 
-## 6. Configurar arquivos estaticos
+A aplicação cria o banco SQLite em `instance/database.db` na primeira execução. Proteja esse arquivo e não o inclua em commits. Mantenha `FLASK_DEBUG` desligado na implantação e use HTTPS.
 
-No painel **Web**, em **Static files**, adicione:
+## Instalações antigas
 
-```text
-URL: /static/
-Directory: /home/thifroz/controle-estoque-natura-avon/static
+Versões anteriores continham credenciais administrativas previsíveis e as redefiniam ao iniciar. O código atual parou de redefini-las, mas **não troca senhas já gravadas**. Altere imediatamente as senhas no banco de cada instalação antiga. Uma forma de atualizar uma conta pelo console privado da instalação:
+
+```python
+from getpass import getpass
+from app import app
+from models import Usuario, db
+
+with app.app_context():
+    login = input("Usuário existente: ")
+    usuario = Usuario.query.filter_by(usuario=login).first()
+    if usuario is None:
+        raise SystemExit("Usuário não encontrado")
+    usuario.set_senha(getpass("Nova senha exclusiva: "))
+    db.session.commit()
 ```
 
-## 7. Recarregar
-
-Clique em **Reload** no painel **Web**.
-
-Logins iniciais:
-
-```text
-usuario: anafroz
-senha: 181085
-
-usuario: sandrafroz
-senha: 181085
-
-usuario: thifroz
-senha: 181085
-```
-
-Antes de usar em producao, e recomendavel implementar uma tela para trocar senhas.
+Execute o trecho em um console Python dentro do diretório e do ambiente virtual do projeto. Faça isso para cada conta afetada. Remover a senha do arquivo atual não remove commits antigos do histórico público. Evite reutilizar essas credenciais em outros serviços.
