@@ -1,41 +1,30 @@
 # Controle de Estoque Natura & Avon
 
-Sistema web em Flask para gerenciamento de estoque, vendas, combos, promocoes e ciclos de produtos Natura e Avon.
+Aplicação web de estudo em **Flask e SQLite** para acompanhar produtos, estoque e vendas de Natura e Avon. Há uma área pública com catálogo, combos e promoções por ciclo, e uma área administrativa para produtos, movimentações, vendas e relatórios.
 
-## Funcionalidades
+## Recursos implementados
 
-- Area publica com pagina inicial, promocoes do ciclo, combos, destaques e catalogo filtravel.
-- Login administrativo para `anafroz`, `sandrafroz` e `thifroz`.
-- CRUD de produtos com imagem, destaque, estoque minimo e exclusao logica.
-- Movimentacoes de estoque com historico e responsavel.
-- Cadastro de vendas com baixa automatica de estoque.
-- Cadastro de ciclos, combos e promocoes vinculadas a ciclos.
-- Dashboard com indicadores e relatorios de estoque/vendas em CSV e pagina de impressao para PDF.
+- Cadastro de produtos com imagens, destaque e estoque mínimo.
+- Registro de entradas e saídas e baixa de estoque nas vendas.
+- Ciclos, combos e promoções.
+- Relatórios de estoque e vendas em CSV e visualização para impressão.
 
-## Como executar
+## Executar localmente
 
 ```bash
+git clone https://github.com/ThiagoFroz/controle-estoque-natura-avon.git
+cd controle-estoque-natura-avon
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+export SECRET_KEY="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"
+export ADMIN_USERNAME="seu-admin"
+export ADMIN_PASSWORD="uma-senha-longa-e-exclusiva"
 python app.py
 ```
 
-Depois acesse:
+Acesse `http://127.0.0.1:5000/` para a área pública e `http://127.0.0.1:5000/login` para entrar. O banco local é criado em `instance/database.db`.
 
-- Publico: `http://127.0.0.1:5000/`
-- Admin: `http://127.0.0.1:5000/login`
+`ADMIN_USERNAME` e `ADMIN_PASSWORD` só criam um usuário se ele ainda não existir; iniciar o aplicativo novamente **não redefine senhas existentes**. Para outras contas, configure usuários diretamente por um fluxo administrativo apropriado. Não use credenciais de exemplo nem publique o banco de dados. Em produção, defina uma `SECRET_KEY` estável, exclusiva e secreta, mantenha `FLASK_DEBUG` desligado e use HTTPS. O [guia de implantação](DEPLOY_PYTHONANYWHERE.md) contém o roteiro para PythonAnywhere; confira as variáveis de ambiente antes de publicar.
 
-O banco SQLite fica em `instance/database.db` e e criado automaticamente na primeira execucao.
-
-Usuarios administrativos iniciais:
-
-```text
-anafroz / 181085
-sandrafroz / 181085
-thifroz / 181085
-```
-
-## Deploy gratuito
-
-Para publicar sem custo, use o guia [DEPLOY_PYTHONANYWHERE.md](DEPLOY_PYTHONANYWHERE.md).
+> Credenciais anteriormente incluídas no histórico público devem ser consideradas comprometidas. Troque senhas em qualquer instalação existente; alterar o README ou o código atual não invalida o histórico.
