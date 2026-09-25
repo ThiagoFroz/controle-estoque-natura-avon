@@ -1,11 +1,13 @@
 import os
+import secrets
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-change-me")
+    # Para manter sessões após reinícios, configure SECRET_KEY no ambiente.
+    SECRET_KEY = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL",
         "sqlite:///" + os.path.join(BASE_DIR, "instance", "database.db"),
