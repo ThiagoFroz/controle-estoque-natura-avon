@@ -36,37 +36,40 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        criar_usuarios_admin()
+        criar_usuario_admin_inicial()
 
     return app
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return db.session.get(Usuario, int(user_id))
 
 
-def criar_usuarios_admin():
-    Usuario.query.filter_by(usuario="admin").delete()
+def criar_usuario_admin_inicial():
+    """Cria um administrador somente se as variáveis de bootstrap forem fornecidas.
 
-    admins = {
-        "anafroz": "Ana Froz",
-        "sandrafroz": "Sandra Froz",
-        "thifroz": "Thi Froz",
-    }
+    A inicialização nunca redefine a senha de contas existentes.
+    """
+    login = os.getenv("ADMIN_USERNAME")
+    senha = os.getenv("ADMIN_PASSWORD")
+    if bool(login) != bool(senha):
+        raise RuntimeError("Defina ADMIN_USERNAME e ADMIN_PASSWORD em conjunto.")
+    if not login:
+        return
 
-    for login, nome in admins.items():
-        usuario = Usuario.query.filter_by(usuario=login).first()
-        if usuario is None:
-            usuario = Usuario(nome=nome, usuario=login)
-            db.session.add(usuario)
-        usuario.set_senha("181085")
-
-    db.session.commit()
+    if Usuario.query.filter_by(usuario=login).first() is None:
+        usuario = Usuario(
+            nome=os.getenv("ADMIN_NAME", login),
+            usuario=login,
+        )
+        usuario.set_senha(senha)
+        db.session.add(usuario)
+        db.session.commit()
 
 
 app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=os.getenv("FLASK_DEBUG") == "1")
